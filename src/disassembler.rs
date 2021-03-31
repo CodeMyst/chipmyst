@@ -1,22 +1,13 @@
-use core::panic;
-use std::env;
 use std::fs;
 
-struct Instruction {
-    opcode: u16,
-    asm: String,
+#[derive(Debug)]
+pub struct Instruction {
+    pub opcode: u16,
+    pub asm: String,
 }
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    if args.len() < 2 {
-        panic!("rom path not provided");
-    }
-
-    let rom_file = &args[1];
-
-    let rom_contents = fs::read(rom_file).expect("can't read rom");
+pub fn disassemble(rom_path: &String) -> Vec<Instruction> {
+    let rom_contents = fs::read(rom_path).expect("can't read rom");
 
     let mut instructions: Vec<Instruction> = Vec::new();
 
@@ -111,10 +102,10 @@ fn main() {
 
         let instruction = Instruction { opcode, asm };
 
-        println!("{:04x} -> {}", instruction.opcode, instruction.asm);
-
         instructions.push(instruction);
 
         i += 2;
     }
+
+    return instructions;
 }
