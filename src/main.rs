@@ -1,6 +1,8 @@
 mod disassembler;
+mod cpu;
 
 use std::env;
+use cpu::Cpu;
 use disassembler::disassemble;
 use raylib::prelude::*;
 
@@ -13,8 +15,20 @@ fn main() {
 
     let instructions = disassemble(&args[1]);
 
+    let mut cpu = Cpu { memory: [0; 4096],
+        registers: [0; 16],
+        stack: [0; 16],
+        i: 0,
+        vf: 0,
+        delay_timer: 0,
+        sound_timer: 0,
+        pc: 0,
+        sp: 0 };
+
+    cpu.load_program(&instructions);
+
     let (mut rl, thread) = raylib::init()
-        .size(640, 480)
+        .size(640, 320)
         .title("chipmyst")
         .build();
 
